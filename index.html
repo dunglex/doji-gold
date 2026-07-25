@@ -561,6 +561,30 @@
             </div>
         </div>
 
+        <!-- MIHONG SECTION -->
+        <div class="source-section" id="mihongSection">
+            <div class="source-title"><span class="badge">2</span> <strong>MI HỒNG</strong></div>
+            <div class="table-wrapper">
+                <table id="mihongTable">
+                    <thead>
+                        <tr>
+                            <th>Mã</th>
+                            <th>Tên sản phẩm</th>
+                            <th>Loại</th>
+                            <th class="price-cell">Mua vào</th>
+                            <th class="price-cell">Bán ra</th>
+                            <th class="price-cell">Chênh lệch</th>
+                            <th class="price-cell">Thay đổi Mua</th>
+                            <th class="price-cell">Thay đổi Bán</th>
+                            <th>Trạng thái</th>
+                        </tr>
+                    </thead>
+                    <tbody id="mihongBody">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
         <!-- DOJI SECTION -->
         <div class="source-section" id="dojiSection">
             <div class="source-title"><span class="badge">3</span> <strong>DOJI</strong></div>
@@ -585,7 +609,7 @@
     </main>
 
     <script>
-        // Load three sources and render them vertically in the order: goldprice, sjc, doji
+        // Load three sources and render them vertically in the order: goldprice, mihong, doji
         async function fetchJsonSafe(url) {
             try {
                 const resp = await fetch(url, {cache: 'no-store'});
@@ -635,6 +659,47 @@
                         <td class="price-cell" style="color: ${chgColor}">${chgText}</td>
                         <td class="price-cell" style="color: ${pcColor}">${pcText}</td>
                         <td class="price-cell">${formatNumber(row.close)}</td>
+                        <td><span class="status-badge status-active"></span><span>Hoạt động</span></td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function renderMihong(bodyElId, prices) {
+            const tbody = document.getElementById(bodyElId);
+            if (!Array.isArray(prices) || prices.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="9" class="no-data">Không có dữ liệu</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = prices.map(price => {
+                const code = price.code || '';
+                const name = price.code ? (price.code + ' - ' + (price.type || 'Vàng')) : 'Vàng';
+                const buy = price.buyingPrice ?? null;
+                const sell = price.sellingPrice ?? null;
+                const buyChange = price.buyChange ?? null;
+                const sellChange = price.sellChange ?? null;
+
+                let diff = null;
+                if (buy != null && sell != null && !isNaN(buy) && !isNaN(sell)) {
+                    diff = sell - buy;
+                }
+
+                const buyChangeColor = buyChange != null ? (buyChange >= 0 ? '#4caf50' : '#f44336') : '#666';
+                const sellChangeColor = sellChange != null ? (sellChange >= 0 ? '#4caf50' : '#f44336') : '#666';
+                const buyChangeText = buyChange != null ? (buyChange > 0 ? '+' + formatNumber(buyChange) : formatNumber(buyChange)) : '-';
+                const sellChangeText = sellChange != null ? (sellChange > 0 ? '+' + formatNumber(sellChange) : formatNumber(sellChange)) : '-';
+
+                return `
+                    <tr>
+                        <td class="material-code">${escapeHtml(code)}</td>
+                        <td class="material-name">${escapeHtml(name)}</td>
+                        <td><span class="type-badge gold">Vàng</span></td>
+                        <td class="price-cell price-buy">${formatNumber(buy)}</td>
+                        <td class="price-cell price-sell">${formatNumber(sell)}</td>
+                        <td class="price-cell price-range">${diff !== null ? formatNumber(diff) : '-'}<span class="price-range-percent">(${diff !== null && buy ? ((diff / buy) * 100).toFixed(2) + '%' : '-'})</span></td>
+                        <td class="price-cell" style="color: ${buyChangeColor}">${buyChangeText}</td>
+                        <td class="price-cell" style="color: ${sellChangeColor}">${sellChangeText}</td>
                         <td><span class="status-badge status-active"></span><span>Hoạt động</span></td>
                     </tr>
                 `;
@@ -704,8 +769,9 @@
 
         async function loadAll() {
             // Fetch all three in parallel
-            const [gRes, dRes] = await Promise.all([
+            const [gRes, mRes, dRes] = await Promise.all([
                 fetchJsonSafe('gold_prices_goldprice.json'),
+                fetchJsonSafe('gold_prices_mihong.json'),
                 fetchJsonSafe('gold_prices_doji.json')
             ]);
 
@@ -718,6 +784,17 @@
                 }
             } else {
                 renderErrorInto('goldpriceBody', gRes.error || 'Invalid JSON', gRes.raw, 8);
+            }
+
+            // MIHONG
+            if (mRes.ok) {
+                const mData = mRes.data;
+                renderMihong('mihongBody', Array.isArray(mData) ? mData : (mData && mData.items ? mData.items : []));
+                if (Array.isArray(mData) && mData.length > 0 && mData[0].dateTime) {
+                    try { setUpdateTime(new Date(mData[0].dateTime)); } catch(e){}
+                }
+            } else {
+                renderErrorInto('mihongBody', mRes.error || 'Invalid JSON', mRes.raw, 9);
             }
 
             // DOJI
@@ -746,9 +823,10 @@
         function updateStatsCombined() {
             // Count total entries across three tables
             const goldpriceCount = document.getElementById('goldpriceBody').querySelectorAll('tr').length;
+            const mihongCount = document.getElementById('mihongBody').querySelectorAll('tr').length;
             const dojiCount = document.getElementById('dojiBody').querySelectorAll('tr').length;
 
-            const total = [goldpriceCount, dojiCount].reduce((a,b)=>a+b,0);
+            const total = [goldpriceCount, mihongCount, dojiCount].reduce((a,b)=>a+b,0);
 
             const statsHtml = `
                 <div class="stat-card">
@@ -758,6 +836,10 @@
                 <div class="stat-card">
                     <div class="stat-value">${goldpriceCount}</div>
                     <p>GoldPrice</p>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">${mihongCount}</div>
+                    <p>Mi Hồng</p>
                 </div>
                 <div class="stat-card">
                     <div class="stat-value">${dojiCount}</div>
