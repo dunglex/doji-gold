@@ -715,11 +715,14 @@
             tbody.innerHTML = prices.map(price => {
                 const code = price.code || '';
                 const name = price.code ? (price.code + ' - ' + (price.type || 'Vàng')) : 'Vàng';
-                const buy = price.buyingPrice ?? null;
-                const sell = price.sellingPrice ?? null;
-                const buyChange = price.buyChange ?? null;
-                const sellChange = price.sellChange ?? null;
-
+                let buy = price.buyingPrice ?? null;
+                let sell = price.sellingPrice ?? null;
+                let buyChange = price.buyChange ?? null;
+                let sellChange = price.sellChange ?? null;
+                if (buy == 0) buy ='';
+                if (sell == 0) sell ='';
+                if (buy == '' || buyChange == 0) buyChange ='';
+                if (sell == '' || sellChange == 0) sellChange ='';
                 let diff = null;
                 if (buy != null && sell != null && !isNaN(buy) && !isNaN(sell)) {
                     diff = sell - buy;
@@ -833,12 +836,8 @@
                 const name = item.name || '';
                 let buy = item.buy_price ?? null;
                 let sell = item.sell_price ?? null;
-                if (buy == 0 || buy == 1) {
-                    buy = '';
-                }
-                if (sell == 0 || sell == 1) {
-                    sell = '';
-                }  
+                if (buy == 0 || buy == 1) buy = '';
+                if (sell == 0 || sell == 1) sell = '';  
                 let diff = null;
                 if (buy != null && sell != null && !isNaN(buy) && !isNaN(sell) && buy > 0 && sell > 0) {
                     diff = sell - buy;
