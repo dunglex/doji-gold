@@ -1,0 +1,35 @@
+{
+  "errorCode" : "0",
+  "message" : "Thành công",
+  "data" : [ {
+    "idx" : "1",
+    "name" : "Bạc PQ",
+    "priceChangePercent" : -0.31,
+    "priceBuyTael" : 2168000.0,
+    "priceSellTael" : 2235000.0,
+    "id" : "B",
+    "buyprice" : 216800.0,
+    "sellprice" : 223500.0,
+    "unit_name" : "Chỉ"
+  }, {
+    "idx" : "2",
+    "name" : "Vàng PQ",
+    "priceChangePercent" : 0.71,
+    "priceBuyTael" : 137500000.0,
+    "priceSellTael" : 141500000.0,
+    "id" : "V",
+    "buyprice" : 13750000.0,
+    "sellprice" : 14150000.0,
+    "unit_name" : "Chỉ"
+  }, {
+    "idx" : "3",
+    "name" : "SJC           ",
+    "priceChangePercent" : 0.71,
+    "priceBuyTael" : 137500000.0,
+    "priceSellTael" : 141500000.0,
+    "id" : "S",
+    "buyprice" : 13750000.0,
+    "sellprice" : 14150000.0,
+    "unit_name" : "Chỉ"
+  } ]
+}
