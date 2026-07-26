@@ -63,3 +63,22 @@ curl 'https://be.phuquy.com.vn/jewelry/product-payment-service/api/products/get-
   -H 'sec-fetch-site: same-site' \
   -H 'user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36' > prices_phuquy.json
   
+# Download prices from baotinmanhhai.vn
+curl 'https://baotinmanhhai.vn/api/graphql' \
+  -H 'accept: application/graphql-response+json, application/json' \
+  -H 'accept-language: en-US,en;q=0.9' \
+  -H 'content-type: application/json' \
+  -H 'origin: https://baotinmanhhai.vn' \
+  -H 'priority: u=1, i' \
+  -H 'referer: https://baotinmanhhai.vn/vi/bang-gia-vang' \
+  -H 'sec-ch-ua: "Not;A=Brand";v="8", "Chromium";v="150", "Google Chrome";v="150"' \
+  -H 'sec-ch-ua-mobile: ?0' \
+  -H 'sec-ch-ua-platform: "Windows"' \
+  -H 'sec-fetch-dest: empty' \
+  -H 'sec-fetch-mode: cors' \
+  -H 'sec-fetch-site: same-origin' \
+  -H 'store: default' \
+  -H 'user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36' \
+  --data-raw '{"query":"\n  query GetGoldRates {\n    goldRates {\n      items {\n        code\n        name\n        vendor_name\n        buy_price\n        sell_price\n        unit\n        weight\n        trend\n        trend_value\n        sparkline_data\n        sell_sparkline_data\n        last_updated\n        rate_image\n      }\n      total_count\n      ticker_config {\n        selected_products\n        max_items\n        cta_label\n        cta_url\n        link_label\n        link_url\n        ticker_media\n        logo\n      }\n    }\n  }\n","operationName":"GetGoldRates"}' -k > prices_baotinmanhhai_full.json
+
+ 
