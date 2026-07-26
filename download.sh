@@ -79,6 +79,6 @@ curl 'https://baotinmanhhai.vn/api/graphql' \
   -H 'sec-fetch-site: same-origin' \
   -H 'store: default' \
   -H 'user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36' \
-  --data-raw '{"query":"\n  query GetGoldRates {\n    goldRates {\n      items {\n        code\n        name\n        vendor_name\n        buy_price\n        sell_price\n        unit\n        weight\n        trend\n        trend_value\n        sparkline_data\n        sell_sparkline_data\n        last_updated\n        rate_image\n      }\n      total_count\n      ticker_config {\n        selected_products\n        max_items\n        cta_label\n        cta_url\n        link_label\n        link_url\n        ticker_media\n        logo\n      }\n    }\n  }\n","operationName":"GetGoldRates"}' -k > prices_baotinmanhhai_full.json
+  --data-raw '{"query":"\n  query GetGoldRates {\n    goldRates {\n      items {\n        code\n        name\n        vendor_name\n        buy_price\n        sell_price\n        unit\n        weight\n        trend\n        trend_value\n        sparkline_data\n        sell_sparkline_data\n        last_updated\n        rate_image\n      }\n      total_count\n      ticker_config {\n        selected_products\n        max_items\n        cta_label\n        cta_url\n        link_label\n        link_url\n        ticker_media\n        logo\n      }\n    }\n  }\n","operationName":"GetGoldRates"}' -k > prices_baotinmanhhai.json
 
  
