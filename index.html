@@ -667,6 +667,7 @@
         }
 
         function formatNumber(v) {
+            if (v == 0) return '';
             if (v === null || v === undefined || isNaN(v)) return '-';
             try { return Number(v).toLocaleString('vi-VN'); } catch (e) { return String(v); }
         }
@@ -839,7 +840,7 @@
                     sell = '';
                 }  
                 let diff = null;
-                if (buy != null && sell != null && !isNaN(buy) && !isNaN(sell)) {
+                if (buy != null && sell != null && !isNaN(buy) && !isNaN(sell) && buy > 0 && sell > 0) {
                     diff = sell - buy;
                 }
 
