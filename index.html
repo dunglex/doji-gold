@@ -791,10 +791,9 @@
             tbody.innerHTML = items.map(item => {
                 const code = item.id || '';
                 const name = item.name || '';
-                const buy = item.buyprice ?? null;
-                const sell = item.sellprice ?? null;
+                let buy = item.buyprice ?? null;
+                let sell = item.sellprice ?? null;
                 const changePercent = item.priceChangePercent ?? null;
-
                 let diff = null;
                 if (buy != null && sell != null && !isNaN(buy) && !isNaN(sell)) {
                     diff = sell - buy;
