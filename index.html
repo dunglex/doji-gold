@@ -830,9 +830,8 @@
             tbody.innerHTML = items.map(item => {
                 const code = item.code || '';
                 const name = item.name || '';
-                const buy = item.buy_price ?? null;
-                const sell = item.sell_price ?? null;
-
+                let buy = item.buy_price ?? null;
+                let sell = item.sell_price ?? null;
                 if (buy == 0 || buy == 1) {
                     buy = '';
                 }
