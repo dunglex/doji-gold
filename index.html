@@ -552,7 +552,6 @@
                             <th class="price-cell">Thay đổi 6 tháng</th>
                             <th class="price-cell">Thay đổi hôm nay</th>
                             <th class="price-cell">Giá đóng cửa</th>
-                            <th>Trạng thái</th>
                         </tr>
                     </thead>
                     <tbody id="goldpriceBody">
@@ -576,7 +575,6 @@
                             <th class="price-cell">Chênh lệch</th>
                             <th class="price-cell">Thay đổi Mua</th>
                             <th class="price-cell">Thay đổi Bán</th>
-                            <th>Trạng thái</th>
                         </tr>
                     </thead>
                     <tbody id="mihongBody">
@@ -598,7 +596,6 @@
                             <th class="price-cell">Mua vào</th>
                             <th class="price-cell">Bán ra</th>
                             <th class="price-cell">Chênh lệch</th>
-                            <th>Trạng thái</th>
                         </tr>
                     </thead>
                     <tbody id="dojiBody">
@@ -621,7 +618,6 @@
                             <th class="price-cell">Bán ra</th>
                             <th class="price-cell">Chênh lệch</th>
                             <th class="price-cell">Thay đổi (%)</th>
-                            <th>Trạng thái</th>
                         </tr>
                     </thead>
                     <tbody id="phuquyBody">
@@ -657,7 +653,7 @@
         function renderGoldPrice(bodyElId, items) {
             const tbody = document.getElementById(bodyElId);
             if (!Array.isArray(items) || items.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="8" class="no-data">Không có dữ liệu</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="7" class="no-data">Không có dữ liệu</td></tr>';
                 return;
             }
 
@@ -682,7 +678,6 @@
                         <td class="price-cell" style="color: ${chgColor}">${chgText}</td>
                         <td class="price-cell" style="color: ${pcColor}">${pcText}</td>
                         <td class="price-cell">${formatNumber(row.close)}</td>
-                        <td><span class="status-badge status-active"></span><span>Hoạt động</span></td>
                     </tr>
                 `;
             }).join('');
@@ -691,7 +686,7 @@
         function renderMihong(bodyElId, prices) {
             const tbody = document.getElementById(bodyElId);
             if (!Array.isArray(prices) || prices.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="9" class="no-data">Không có dữ liệu</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="8" class="no-data">Không có dữ liệu</td></tr>';
                 return;
             }
 
@@ -720,10 +715,9 @@
                         <td><span class="type-badge gold">Vàng</span></td>
                         <td class="price-cell price-buy">${formatNumber(buy)}</td>
                         <td class="price-cell price-sell">${formatNumber(sell)}</td>
-                        <td class="price-cell price-range">${diff !== null ? formatNumber(diff) : '-'}<span class="price-range-percent">(${diff !== null && buy ? ((diff / buy) * 100).toFixed(2) + '%' : '-'})</span></td>
+                        <td class="price-cell price-range">${diff !== null ? formatNumber(diff) : '-'}<span class="price-range-percent">(${diff !== null && buy ? ((diff / buy) * 100).toFixed(2) + '%' : '-'}</span></td>
                         <td class="price-cell" style="color: ${buyChangeColor}">${buyChangeText}</td>
                         <td class="price-cell" style="color: ${sellChangeColor}">${sellChangeText}</td>
-                        <td><span class="status-badge status-active"></span><span>Hoạt động</span></td>
                     </tr>
                 `;
             }).join('');
@@ -732,7 +726,7 @@
         function renderPricesInto(bodyElId, prices) {
             const tbody = document.getElementById(bodyElId);
             if (!Array.isArray(prices) || prices.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="7" class="no-data">Không có dữ liệu</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="6" class="no-data">Không có dữ liệu</td></tr>';
                 return;
             }
 
@@ -752,8 +746,6 @@
                 const statusClass = (price.isActive === true || price.isActive === undefined) ? '' : 'inactive';
                 const typeBadge = (price.type === 'S' || type === 'S') ? 'silver' : 'gold';
                 const typeLabel = (price.type === 'S' || type === 'S') ? 'Bạc' : 'Vàng';
-                const statusDot = price.isActive === true ? 'status-active' : 'status-inactive';
-                const statusText = price.isActive === true ? 'Hoạt động' : (price.isActive === false ? 'Ngừng' : '-');
 
                 return `
                     <tr class="${statusClass}">
@@ -762,10 +754,7 @@
                         <td><span class="type-badge ${typeBadge}">${typeLabel}</span></td>
                         <td class="price-cell price-buy">${formatNumber(buy)}</td>
                         <td class="price-cell price-sell">${formatNumber(sell)}</td>
-                        <td class="price-cell price-range">${diff !== null ? formatNumber(diff) : '-'}<span class="price-range-percent">(${diff !== null && buy ? ((diff / buy) * 100).toFixed(2) + '%' : '-'})</span></td>
-                        <td>
-                            <span class="status-badge ${statusDot}"></span><span>${statusText}</span>
-                        </td>
+                        <td class="price-cell price-range">${diff !== null ? formatNumber(diff) : '-'}<span class="price-range-percent">(${diff !== null && buy ? ((diff / buy) * 100).toFixed(2) + '%' : '-'}</span></td>
                     </tr>
                 `;
             }).join('');
@@ -774,7 +763,7 @@
         function renderPhuQuy(bodyElId, items) {
             const tbody = document.getElementById(bodyElId);
             if (!Array.isArray(items) || items.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="8" class="no-data">Không có dữ liệu</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="7" class="no-data">Không có dữ liệu</td></tr>';
                 return;
             }
 
@@ -804,9 +793,8 @@
                         <td><span class="type-badge ${typeBadge}">${typeLabel}</span></td>
                         <td class="price-cell price-buy">${formatNumber(buy)}</td>
                         <td class="price-cell price-sell">${formatNumber(sell)}</td>
-                        <td class="price-cell price-range">${diff !== null ? formatNumber(diff) : '-'}<span class="price-range-percent">(${diff !== null && buy ? ((diff / buy) * 100).toFixed(2) + '%' : '-'})</span></td>
+                        <td class="price-cell price-range">${diff !== null ? formatNumber(diff) : '-'}<span class="price-range-percent">(${diff !== null && buy ? ((diff / buy) * 100).toFixed(2) + '%' : '-'}</span></td>
                         <td class="price-cell" style="color: ${changeColor}">${changeText}</td>
-                        <td><span class="status-badge status-active"></span><span>Hoạt động</span></td>
                     </tr>
                 `;
             }).join('');
@@ -825,7 +813,7 @@
         function renderErrorInto(bodyElId, message, raw, colspan) {
             const tbody = document.getElementById(bodyElId);
             const short = escapeHtml(String(message).slice(0, 200));
-            const col = colspan || 7;
+            const col = colspan || 6;
             tbody.innerHTML = `<tr><td colspan="${col}" class="no-data">Lỗi tải dữ liệu: ${short}</td></tr>`;
             // Keep raw for debugging in console
             if (raw) console.warn('Raw response for', bodyElId, raw);
@@ -848,7 +836,7 @@
                     try { setUpdateTime(new Date(Number(gRes.data.ts))); } catch(e){}
                 }
             } else {
-                renderErrorInto('goldpriceBody', gRes.error || 'Invalid JSON', gRes.raw, 8);
+                renderErrorInto('goldpriceBody', gRes.error || 'Invalid JSON', gRes.raw, 7);
             }
 
             // MIHONG
@@ -859,7 +847,7 @@
                     try { setUpdateTime(new Date(mData[0].dateTime)); } catch(e){}
                 }
             } else {
-                renderErrorInto('mihongBody', mRes.error || 'Invalid JSON', mRes.raw, 9);
+                renderErrorInto('mihongBody', mRes.error || 'Invalid JSON', mRes.raw, 8);
             }
 
             // DOJI
@@ -868,7 +856,7 @@
                 renderPricesInto('dojiBody', Array.isArray(dData) ? dData : (dData && dData.items ? dData.items : []));
                 if (Array.isArray(dData) && dData.length > 0 && dData[0].updateDate) setUpdateTime(new Date(dData[0].updateDate));
             } else {
-                renderErrorInto('dojiBody', dRes.error || 'Invalid JSON', dRes.raw);
+                renderErrorInto('dojiBody', dRes.error || 'Invalid JSON', dRes.raw, 6);
             }
 
             // PHUQUY
@@ -877,7 +865,7 @@
                 const phuquyItems = pData && pData.data ? pData.data : (Array.isArray(pData) ? pData : []);
                 renderPhuQuy('phuquyBody', phuquyItems);
             } else {
-                renderErrorInto('phuquyBody', pRes.error || 'Invalid JSON', pRes.raw, 8);
+                renderErrorInto('phuquyBody', pRes.error || 'Invalid JSON', pRes.raw, 7);
             }
 
             updateStatsCombined();
