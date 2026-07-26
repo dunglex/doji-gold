@@ -770,9 +770,9 @@
         async function loadAll() {
             // Fetch all three in parallel
             const [gRes, mRes, dRes] = await Promise.all([
-                fetchJsonSafe('gold_prices_goldprice.json'),
-                fetchJsonSafe('gold_prices_mihong.json'),
-                fetchJsonSafe('gold_prices_doji.json')
+                fetchJsonSafe('prices_goldprice.json'),
+                fetchJsonSafe('prices_mihong.json'),
+                fetchJsonSafe('prices_doji.json')
             ]);
 
             // GOLDPRICE
