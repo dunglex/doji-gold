@@ -715,16 +715,16 @@
             tbody.innerHTML = prices.map(price => {
                 const code = price.code || '';
                 const name = price.code ? (price.code + ' - ' + (price.type || 'Vàng')) : 'Vàng';
-                let buy = price.buyingPrice ?? null;
-                let sell = price.sellingPrice ?? null;
-                let buyChange = price.buyChange ?? null;
-                let sellChange = price.sellChange ?? null;
+                let buy = price.buyingPrice ?? '';
+                let sell = price.sellingPrice ?? '';
+                let buyChange = price.buyChange ?? '';
+                let sellChange = price.sellChange ?? '';
                 if (buy == 0) buy ='';
                 if (sell == 0) sell ='';
                 if (buy == '' || buyChange == 0) buyChange ='';
                 if (sell == '' || sellChange == 0) sellChange ='';
                 let diff = null;
-                if (buy != null && sell != null && !isNaN(buy) && !isNaN(sell)) {
+                if (buy != null && sell != null && !isNaN(buy) && !isNaN(sell) && buy > 0 && sell > 0) {
                     diff = sell - buy;
                 }
 
@@ -854,7 +854,7 @@
                         <td><span class="type-badge ${typeBadge}">${typeLabel}</span></td>
                         <td class="price-cell price-buy">${formatNumber(buy)}</td>
                         <td class="price-cell price-sell">${formatNumber(sell)}</td>
-                        <td class="price-cell price-range">${diff !== null ? formatNumber(diff) : '-'}<span class="price-range-percent">(${diff !== null && buy ? ((diff / buy) * 100).toFixed(2) + '%' : ''})</span></td>
+                        <td class="price-cell price-range">${diff !== null ? formatNumber(diff) : ''}<span class="price-range-percent">${diff !== null && buy ? ((diff / buy) * 100).toFixed(2) + '%' : ''}</span></td>
                     </tr>
                 `;
             }).join('');
