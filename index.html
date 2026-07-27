@@ -646,6 +646,28 @@
                 </table>
             </div>
         </div>
+
+        <!-- NGOCTHAM SECTION -->
+        <div class="source-section" id="ngocthamSection">
+            <div class="source-title"><span class="badge">6</span> <strong>NGỌC THẮM</strong></div>
+            <div class="table-wrapper">
+                <table id="ngocthamTable">
+                    <thead>
+                        <tr>
+                            <th>Mã</th>
+                            <th>Tên sản phẩm</th>
+                            <th>Loại</th>
+                            <th class="price-cell">Mua vào</th>
+                            <th class="price-cell">Bán ra</th>
+                            <th class="price-cell">Chênh lệch</th>
+                            <th class="price-cell">Thay đổi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ngocthamBody">
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </main>
 
     <script>
@@ -890,15 +912,57 @@
             }).join('');
         }
 
+        function renderNgocTham(bodyElId, items) {
+            const tbody = document.getElementById(bodyElId);
+            if (!Array.isArray(items) || items.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" class="no-data">Không có dữ liệu</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = items.map(item => {
+                const code = Array.isArray(item.idloaivang) ? item.idloaivang.join(', ') : String(item.idloaivang || '');
+                const name = item.loaivang || '';
+                const buy = item.giamua != null && item.giamua !== '' ? Number(item.giamua) : null;
+                const sell = item.giaban != null && item.giaban !== '' ? Number(item.giaban) : null;
+                const changeBuy = item.chihiengiamua != null && item.chihiengiamua !== '' ? Number(item.chihiengiamua) : null;
+                const changeSell = item.chihiengiaban != null && item.chihiengiaban !== '' ? Number(item.chihiengiaban) : null;
+                let diff = null;
+                if (buy != null && sell != null && !isNaN(buy) && !isNaN(sell)) {
+                    diff = sell - buy;
+                }
+
+                const changes = [];
+                if (changeBuy != null) changes.push(`Mua: ${changeBuy > 0 ? '+' + formatNumber(changeBuy) : formatNumber(changeBuy)}`);
+                if (changeSell != null) changes.push(`Bán: ${changeSell > 0 ? '+' + formatNumber(changeSell) : formatNumber(changeSell)}`);
+                const changeText = changes.length ? changes.join(' / ') : '-';
+                const changeColor = (changeBuy != null && changeSell != null)
+                    ? ((changeBuy >= 0 && changeSell >= 0) ? '#4caf50' : (changeBuy <= 0 && changeSell <= 0) ? '#f44336' : '#666')
+                    : (changeBuy != null ? (changeBuy >= 0 ? '#4caf50' : '#f44336') : (changeSell != null ? (changeSell >= 0 ? '#4caf50' : '#f44336') : '#666'));
+
+                return `
+                    <tr>
+                        <td class="material-code">${escapeHtml(code)}</td>
+                        <td class="material-name">${escapeHtml(name)}</td>
+                        <td><span class="type-badge gold">Vàng</span></td>
+                        <td class="price-cell price-buy">${formatNumber(buy)}</td>
+                        <td class="price-cell price-sell">${formatNumber(sell)}</td>
+                        <td class="price-cell price-range">${diff !== null ? formatNumber(diff) : '-'}<span class="price-range-percent">${diff !== null && '(' + buy + ')' ? '(' + ((diff / buy) * 100).toFixed(2) + '%)' : ''}</span></td>
+                        <td class="price-cell" style="color: ${changeColor}">${escapeHtml(changeText)}</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
         function updateStatsCombined() {
-            // Count total entries across five tables
+            // Count total entries across six tables
             const goldpriceCount = document.getElementById('goldpriceBody').querySelectorAll('tr').length;
             const mihongCount = document.getElementById('mihongBody').querySelectorAll('tr').length;
             const dojiCount = document.getElementById('dojiBody').querySelectorAll('tr').length;
             const phuquyCount = document.getElementById('phuquyBody').querySelectorAll('tr').length;
             const baotinManhhaiCount = document.getElementById('baotinManhhaiBody').querySelectorAll('tr').length;
+            const ngocthamCount = document.getElementById('ngocthamBody').querySelectorAll('tr').length;
 
-            const total = [goldpriceCount, mihongCount, dojiCount, phuquyCount, baotinManhhaiCount].reduce((a,b)=>a+b,0);
+            const total = [goldpriceCount, mihongCount, dojiCount, phuquyCount, baotinManhhaiCount, ngocthamCount].reduce((a,b)=>a+b,0);
 
             const statsHtml = `
                 <div class="stat-card">
@@ -925,18 +989,23 @@
                     <div class="stat-value">${baotinManhhaiCount}</div>
                     <p>Bảo Tín Mạnh Hải</p>
                 </div>
+                <div class="stat-card">
+                    <div class="stat-value">${ngocthamCount}</div>
+                    <p>Ngọc Thắm</p>
+                </div>
             `;
             document.getElementById('statsContainer').innerHTML = statsHtml;
         }
 
         async function loadAll() {
             // Fetch all data sources in parallel
-            const [gRes, mRes, dRes, pRes, bRes] = await Promise.all([
+            const [gRes, mRes, dRes, pRes, bRes, nRes] = await Promise.all([
                 fetchJsonSafe('prices_goldprice.json'),
                 fetchJsonSafe('prices_mihong.json'),
                 fetchJsonSafe('prices_doji.json'),
                 fetchJsonSafe('prices_phuquy.json'),
-                fetchJsonSafe('prices_baotinmanhhai.json')
+                fetchJsonSafe('prices_baotinmanhhai.json'),
+                fetchJsonSafe('prices_ngoctham.json')
             ]);
 
             // GOLDPRICE
@@ -986,6 +1055,18 @@
                 renderBaoTinManhHai('baotinManhhaiBody', baoTinItems);
             } else {
                 renderErrorInto('baotinManhhaiBody', bRes.error || 'Invalid JSON', bRes.raw, 6);
+            }
+
+            // NGOCTHAM
+            if (nRes.ok) {
+                const nData = nRes.data;
+                const ngocThamItems = nData && Array.isArray(nData.chitiet) ? nData.chitiet : [];
+                renderNgocTham('ngocthamBody', ngocThamItems);
+                if (nData && nData.date) {
+                    try { setUpdateTime(new Date(nData.date)); } catch (e) {}
+                }
+            } else {
+                renderErrorInto('ngocthamBody', nRes.error || 'Invalid JSON', nRes.raw, 7);
             }
 
             updateStatsCombined();
