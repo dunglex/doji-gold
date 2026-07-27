@@ -69,9 +69,25 @@
             color: white;
             margin: 10px 0;
             font-weight: 700;
+        }
+
+        .source-toggle {
+            width: 100%;
             display: flex;
             align-items: center;
             gap: 8px;
+            background: transparent;
+            border: 0;
+            color: inherit;
+            padding: 0;
+            font: inherit;
+            text-align: left;
+            cursor: pointer;
+        }
+
+        .source-toggle strong {
+            flex: 1;
+            font-weight: 700;
         }
 
         .source-title span.badge {
@@ -80,6 +96,18 @@
             padding: 6px 10px;
             border-radius: 10px;
             font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .toggle-icon {
+            margin-left: auto;
+            font-size: 1rem;
+            opacity: 0.8;
+            transition: transform 0.2s ease;
+        }
+
+        .source-section.is-open .toggle-icon {
+            transform: rotate(90deg);
         }
 
         .table-wrapper {
@@ -540,8 +568,14 @@
 
         <!-- GOLDPRICE SECTION -->
         <div class="source-section" id="goldpriceSection">
-            <div class="source-title"><span class="badge">1</span> <strong>Goldprices.org</strong></div>
-            <div class="table-wrapper">
+            <div class="source-title">
+                <button class="source-toggle" type="button" aria-expanded="false" data-target="goldpriceTableWrapper">
+                    <span class="badge">1</span>
+                    <strong>Goldprices.org</strong>
+                    <span class="toggle-icon">›</span>
+                </button>
+            </div>
+            <div class="table-wrapper" id="goldpriceTableWrapper">
                 <table id="goldpriceTable">
                     <thead>
                         <tr>
@@ -562,8 +596,14 @@
 
         <!-- MIHONG SECTION -->
         <div class="source-section" id="mihongSection">
-            <div class="source-title"><span class="badge">2</span> <strong>MI HỒNG</strong></div>
-            <div class="table-wrapper">
+            <div class="source-title">
+                <button class="source-toggle" type="button" aria-expanded="false" data-target="mihongTableWrapper">
+                    <span class="badge">2</span>
+                    <strong>MI HỒNG</strong>
+                    <span class="toggle-icon">›</span>
+                </button>
+            </div>
+            <div class="table-wrapper" id="mihongTableWrapper">
                 <table id="mihongTable">
                     <thead>
                         <tr>
@@ -585,8 +625,14 @@
 
         <!-- DOJI SECTION -->
         <div class="source-section" id="dojiSection">
-            <div class="source-title"><span class="badge">3</span> <strong>DOJI</strong></div>
-            <div class="table-wrapper">
+            <div class="source-title">
+                <button class="source-toggle" type="button" aria-expanded="false" data-target="dojiTableWrapper">
+                    <span class="badge">3</span>
+                    <strong>DOJI</strong>
+                    <span class="toggle-icon">›</span>
+                </button>
+            </div>
+            <div class="table-wrapper" id="dojiTableWrapper">
                 <table id="dojiTable">
                     <thead>
                         <tr>
@@ -606,8 +652,14 @@
 
         <!-- PHUQUY SECTION -->
         <div class="source-section" id="phuquySection">
-            <div class="source-title"><span class="badge">4</span> <strong>PHÚ QUÝ</strong></div>
-            <div class="table-wrapper">
+            <div class="source-title">
+                <button class="source-toggle" type="button" aria-expanded="false" data-target="phuquyTableWrapper">
+                    <span class="badge">4</span>
+                    <strong>PHÚ QUÝ</strong>
+                    <span class="toggle-icon">›</span>
+                </button>
+            </div>
+            <div class="table-wrapper" id="phuquyTableWrapper">
                 <table id="phuquyTable">
                     <thead>
                         <tr>
@@ -628,8 +680,14 @@
 
         <!-- BAOTINMANHHAI SECTION -->
         <div class="source-section" id="baotinManhhaiSection">
-            <div class="source-title"><span class="badge">5</span> <strong>BẢO TÍN MẠNH HẢI</strong></div>
-            <div class="table-wrapper">
+            <div class="source-title">
+                <button class="source-toggle" type="button" aria-expanded="false" data-target="baotinManhhaiTableWrapper">
+                    <span class="badge">5</span>
+                    <strong>BẢO TÍN MẠNH HẢI</strong>
+                    <span class="toggle-icon">›</span>
+                </button>
+            </div>
+            <div class="table-wrapper" id="baotinManhhaiTableWrapper">
                 <table id="baotinManhhaiTable">
                     <thead>
                         <tr>
@@ -649,8 +707,14 @@
 
         <!-- NGOCTHAM SECTION -->
         <div class="source-section" id="ngocthamSection">
-            <div class="source-title"><span class="badge">6</span> <strong>NGỌC THẮM</strong></div>
-            <div class="table-wrapper">
+            <div class="source-title">
+                <button class="source-toggle" type="button" aria-expanded="false" data-target="ngocthamTableWrapper">
+                    <span class="badge">6</span>
+                    <strong>NGỌC THẮM</strong>
+                    <span class="toggle-icon">›</span>
+                </button>
+            </div>
+            <div class="table-wrapper" id="ngocthamTableWrapper">
                 <table id="ngocthamTable">
                     <thead>
                         <tr>
@@ -991,10 +1055,53 @@
                 </div>
                 <div class="stat-card">
                     <div class="stat-value">${ngocthamCount}</div>
-                    <p>Ngọc Thắm</p>
+                    <p>Ngọc Thẩm</p>
                 </div>
             `;
             document.getElementById('statsContainer').innerHTML = statsHtml;
+        }
+
+        function initMobileCollapsible() {
+            const sections = Array.from(document.querySelectorAll('.source-section'));
+            if (!sections.length) return;
+
+            const isMobile = () => window.matchMedia('(max-width: 640px)').matches;
+
+            const syncState = () => {
+                sections.forEach(section => {
+                    const button = section.querySelector('.source-toggle');
+                    const wrapper = section.querySelector('.table-wrapper');
+                    if (!button || !wrapper) return;
+
+                    if (!isMobile()) {
+                        section.classList.add('is-open');
+                        wrapper.style.display = '';
+                        button.setAttribute('aria-expanded', 'true');
+                        return;
+                    }
+
+                    if (!section.classList.contains('is-open')) {
+                        wrapper.style.display = 'none';
+                        button.setAttribute('aria-expanded', 'false');
+                    }
+                });
+            };
+
+            sections.forEach(section => {
+                const button = section.querySelector('.source-toggle');
+                const wrapper = section.querySelector('.table-wrapper');
+                if (!button || !wrapper) return;
+
+                button.addEventListener('click', () => {
+                    if (!isMobile()) return;
+                    const isOpen = section.classList.toggle('is-open');
+                    wrapper.style.display = isOpen ? 'block' : 'none';
+                    button.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+                });
+            });
+
+            syncState();
+            window.addEventListener('resize', syncState);
         }
 
         async function loadAll() {
@@ -1079,6 +1186,7 @@
 
         // Initial load and interval
         window.addEventListener('DOMContentLoaded', () => {
+            initMobileCollapsible();
             refreshLoop();
             setInterval(refreshLoop, 300000); // every 5 minutes
         });
