@@ -671,6 +671,36 @@
             if (v === null || v === undefined || isNaN(v)) return '-';
             try { return Number(v).toLocaleString('vi-VN'); } catch (e) { return String(v); }
         }
+        
+        function escapeHtml(s) {
+            if (s === null || s === undefined) return '';
+            return String(s)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+
+        function renderErrorInto(bodyElId, message, raw, colspan) {
+            const tbody = document.getElementById(bodyElId);
+            const short = escapeHtml(String(message).slice(0, 200));
+            const col = colspan || 6;
+            tbody.innerHTML = `<tr><td colspan="${col}" class="no-data">Lỗi tải dữ liệu: ${short}</td></tr>`;
+            // Keep raw for debugging in console
+            if (raw) console.warn('Raw response for', bodyElId, raw);
+        }
+
+        function setUpdateTime(date) {
+            try {
+                if (!(date instanceof Date) || isNaN(date)) return;
+                const formatted = date.toLocaleString('vi-VN', {
+                    year: 'numeric', month: '2-digit', day: '2-digit',
+                    hour: '2-digit', minute: '2-digit', second: '2-digit'
+                });
+                document.getElementById('updateTime').textContent = `Cập nhật: ${formatted}`;
+            } catch (e) {}
+        }
 
         function renderGoldPrice(bodyElId, items) {
             const tbody = document.getElementById(bodyElId);
@@ -740,7 +770,7 @@
                         <td><span class="type-badge gold">Vàng</span></td>
                         <td class="price-cell price-buy">${formatNumber(buy)}</td>
                         <td class="price-cell price-sell">${formatNumber(sell)}</td>
-                        <td class="price-cell price-range">${diff !== null ? formatNumber(diff) : ''}<span class="price-range-percent">${diff !== null && buy ? ((diff / buy) * 100).toFixed(2) + '%' : ''}</span></td>
+                        <td class="price-cell price-range">${diff !== null ? formatNumber(diff) : ''}<span class="price-range-percent">${diff !== null && '(' + buy +')' ? '(' + ((diff / buy) * 100).toFixed(2) + '%)' : ''}</span></td>
                         <td class="price-cell" style="color: ${buyChangeColor}">${buyChangeText}</td>
                         <td class="price-cell" style="color: ${sellChangeColor}">${sellChangeText}</td>
                     </tr>
@@ -779,7 +809,7 @@
                         <td><span class="type-badge ${typeBadge}">${typeLabel}</span></td>
                         <td class="price-cell price-buy">${formatNumber(buy)}</td>
                         <td class="price-cell price-sell">${formatNumber(sell)}</td>
-                        <td class="price-cell price-range">${diff !== null ? formatNumber(diff) : '-'}<span class="price-range-percent">(${diff !== null && buy ? ((diff / buy) * 100).toFixed(2) + '%' : ''})</span></td>
+                        <td class="price-cell price-range">${diff !== null ? formatNumber(diff) : '-'}<span class="price-range-percent">(${diff !== null && '(' + buy + ')' ? '(' + ((diff / buy) * 100).toFixed(2) + '%)' : ''})</span></td>
                     </tr>
                 `;
             }).join('');
@@ -817,7 +847,7 @@
                         <td><span class="type-badge ${typeBadge}">${typeLabel}</span></td>
                         <td class="price-cell price-buy">${formatNumber(buy)}</td>
                         <td class="price-cell price-sell">${formatNumber(sell)}</td>
-                        <td class="price-cell price-range">${diff !== null ? formatNumber(diff) : '-'}<span class="price-range-percent">(${diff !== null && buy ? ((diff / buy) * 100).toFixed(2) + '%' : ''})</span></td>
+                        <td class="price-cell price-range">${diff !== null ? formatNumber(diff) : '-'}<span class="price-range-percent">(${diff !== null && '(' + buy + ')' ? '(' + ((diff / buy) * 100).toFixed(2) + '%)' : ''})</span></td>
                         <td class="price-cell" style="color: ${changeColor}">${changeText}</td>
                     </tr>
                 `;
@@ -854,29 +884,49 @@
                         <td><span class="type-badge ${typeBadge}">${typeLabel}</span></td>
                         <td class="price-cell price-buy">${formatNumber(buy)}</td>
                         <td class="price-cell price-sell">${formatNumber(sell)}</td>
-                        <td class="price-cell price-range">${diff !== null ? formatNumber(diff) : ''}<span class="price-range-percent">${diff !== null && buy ? ((diff / buy) * 100).toFixed(2) + '%' : ''}</span></td>
+                        <td class="price-cell price-range">${diff !== null ? formatNumber(diff) : ''}<span class="price-range-percent">${diff !== null && '(' + buy + ')' ? '(' + ((diff / buy) * 100).toFixed(2) + '%)' : ''}</span></td>
                     </tr>
                 `;
             }).join('');
         }
 
-        function escapeHtml(s) {
-            if (s === null || s === undefined) return '';
-            return String(s)
-                .replace(/&/g, '&amp;')
-                .replace(/</g, '&lt;')
-                .replace(/>/g, '&gt;')
-                .replace(/"/g, '&quot;')
-                .replace(/'/g, '&#039;');
-        }
+        function updateStatsCombined() {
+            // Count total entries across five tables
+            const goldpriceCount = document.getElementById('goldpriceBody').querySelectorAll('tr').length;
+            const mihongCount = document.getElementById('mihongBody').querySelectorAll('tr').length;
+            const dojiCount = document.getElementById('dojiBody').querySelectorAll('tr').length;
+            const phuquyCount = document.getElementById('phuquyBody').querySelectorAll('tr').length;
+            const baotinManhhaiCount = document.getElementById('baotinManhhaiBody').querySelectorAll('tr').length;
 
-        function renderErrorInto(bodyElId, message, raw, colspan) {
-            const tbody = document.getElementById(bodyElId);
-            const short = escapeHtml(String(message).slice(0, 200));
-            const col = colspan || 6;
-            tbody.innerHTML = `<tr><td colspan="${col}" class="no-data">Lỗi tải dữ liệu: ${short}</td></tr>`;
-            // Keep raw for debugging in console
-            if (raw) console.warn('Raw response for', bodyElId, raw);
+            const total = [goldpriceCount, mihongCount, dojiCount, phuquyCount, baotinManhhaiCount].reduce((a,b)=>a+b,0);
+
+            const statsHtml = `
+                <div class="stat-card">
+                    <div class="stat-value">${total}</div>
+                    <p>Tổng hàng (tất cả nguồn)</p>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">${goldpriceCount}</div>
+                    <p>GoldPrice</p>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">${mihongCount}</div>
+                    <p>Mi Hồng</p>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">${dojiCount}</div>
+                    <p>DOJI</p>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">${phuquyCount}</div>
+                    <p>Phú Quý</p>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">${baotinManhhaiCount}</div>
+                    <p>Bảo Tín Mạnh Hải</p>
+                </div>
+            `;
+            document.getElementById('statsContainer').innerHTML = statsHtml;
         }
 
         async function loadAll() {
@@ -939,56 +989,6 @@
             }
 
             updateStatsCombined();
-        }
-
-        function setUpdateTime(date) {
-            try {
-                if (!(date instanceof Date) || isNaN(date)) return;
-                const formatted = date.toLocaleString('vi-VN', {
-                    year: 'numeric', month: '2-digit', day: '2-digit',
-                    hour: '2-digit', minute: '2-digit', second: '2-digit'
-                });
-                document.getElementById('updateTime').textContent = `Cập nhật: ${formatted}`;
-            } catch (e) {}
-        }
-
-        function updateStatsCombined() {
-            // Count total entries across five tables
-            const goldpriceCount = document.getElementById('goldpriceBody').querySelectorAll('tr').length;
-            const mihongCount = document.getElementById('mihongBody').querySelectorAll('tr').length;
-            const dojiCount = document.getElementById('dojiBody').querySelectorAll('tr').length;
-            const phuquyCount = document.getElementById('phuquyBody').querySelectorAll('tr').length;
-            const baotinManhhaiCount = document.getElementById('baotinManhhaiBody').querySelectorAll('tr').length;
-
-            const total = [goldpriceCount, mihongCount, dojiCount, phuquyCount, baotinManhhaiCount].reduce((a,b)=>a+b,0);
-
-            const statsHtml = `
-                <div class="stat-card">
-                    <div class="stat-value">${total}</div>
-                    <p>Tổng hàng (tất cả nguồn)</p>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value">${goldpriceCount}</div>
-                    <p>GoldPrice</p>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value">${mihongCount}</div>
-                    <p>Mi Hồng</p>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value">${dojiCount}</div>
-                    <p>DOJI</p>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value">${phuquyCount}</div>
-                    <p>Phú Quý</p>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value">${baotinManhhaiCount}</div>
-                    <p>Bảo Tín Mạnh Hải</p>
-                </div>
-            `;
-            document.getElementById('statsContainer').innerHTML = statsHtml;
         }
 
         // Refresh data periodically
