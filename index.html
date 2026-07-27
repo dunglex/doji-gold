@@ -660,7 +660,6 @@
                             <th class="price-cell">Mua vào</th>
                             <th class="price-cell">Bán ra</th>
                             <th class="price-cell">Chênh lệch</th>
-                            <th class="price-cell">Thay đổi</th>
                         </tr>
                     </thead>
                     <tbody id="ngocthamBody">
@@ -931,14 +930,6 @@
                     diff = sell - buy;
                 }
 
-                const changes = [];
-                if (changeBuy != null) changes.push(`Mua: ${changeBuy > 0 ? '+' + formatNumber(changeBuy) : formatNumber(changeBuy)}`);
-                if (changeSell != null) changes.push(`Bán: ${changeSell > 0 ? '+' + formatNumber(changeSell) : formatNumber(changeSell)}`);
-                const changeText = changes.length ? changes.join(' / ') : '-';
-                const changeColor = (changeBuy != null && changeSell != null)
-                    ? ((changeBuy >= 0 && changeSell >= 0) ? '#4caf50' : (changeBuy <= 0 && changeSell <= 0) ? '#f44336' : '#666')
-                    : (changeBuy != null ? (changeBuy >= 0 ? '#4caf50' : '#f44336') : (changeSell != null ? (changeSell >= 0 ? '#4caf50' : '#f44336') : '#666'));
-
                 return `
                     <tr>
                         <td class="material-code">${escapeHtml(code)}</td>
@@ -947,7 +938,6 @@
                         <td class="price-cell price-buy">${formatNumber(buy)}</td>
                         <td class="price-cell price-sell">${formatNumber(sell)}</td>
                         <td class="price-cell price-range">${diff !== null ? formatNumber(diff) : '-'}<span class="price-range-percent">${diff !== null && '(' + buy + ')' ? '(' + ((diff / buy) * 100).toFixed(2) + '%)' : ''}</span></td>
-                        <td class="price-cell" style="color: ${changeColor}">${escapeHtml(changeText)}</td>
                     </tr>
                 `;
             }).join('');
