@@ -809,7 +809,7 @@
                         <td><span class="type-badge ${typeBadge}">${typeLabel}</span></td>
                         <td class="price-cell price-buy">${formatNumber(buy)}</td>
                         <td class="price-cell price-sell">${formatNumber(sell)}</td>
-                        <td class="price-cell price-range">${diff !== null ? formatNumber(diff) : '-'}<span class="price-range-percent">(${diff !== null && '(' + buy + ')' ? '(' + ((diff / buy) * 100).toFixed(2) + '%)' : ''})</span></td>
+                        <td class="price-cell price-range">${diff !== null ? formatNumber(diff) : '-'}<span class="price-range-percent">${diff !== null && '(' + buy + ')' ? '(' + ((diff / buy) * 100).toFixed(2) + '%)' : ''}</span></td>
                     </tr>
                 `;
             }).join('');
@@ -847,7 +847,7 @@
                         <td><span class="type-badge ${typeBadge}">${typeLabel}</span></td>
                         <td class="price-cell price-buy">${formatNumber(buy)}</td>
                         <td class="price-cell price-sell">${formatNumber(sell)}</td>
-                        <td class="price-cell price-range">${diff !== null ? formatNumber(diff) : '-'}<span class="price-range-percent">(${diff !== null && '(' + buy + ')' ? '(' + ((diff / buy) * 100).toFixed(2) + '%)' : ''})</span></td>
+                        <td class="price-cell price-range">${diff !== null ? formatNumber(diff) : '-'}<span class="price-range-percent">${diff !== null && '(' + buy + ')' ? '(' + ((diff / buy) * 100).toFixed(2) + '%)' : ''}</span></td>
                         <td class="price-cell" style="color: ${changeColor}">${changeText}</td>
                     </tr>
                 `;
