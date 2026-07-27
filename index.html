@@ -903,7 +903,7 @@
             const statsHtml = `
                 <div class="stat-card">
                     <div class="stat-value">${total}</div>
-                    <p>Tổng hàng (tất cả nguồn)</p>
+                    <p>Tất cả nguồn</p>
                 </div>
                 <div class="stat-card">
                     <div class="stat-value">${goldpriceCount}</div>
@@ -930,7 +930,7 @@
         }
 
         async function loadAll() {
-            // Fetch all five in parallel
+            // Fetch all data sources in parallel
             const [gRes, mRes, dRes, pRes, bRes] = await Promise.all([
                 fetchJsonSafe('prices_goldprice.json'),
                 fetchJsonSafe('prices_mihong.json'),
