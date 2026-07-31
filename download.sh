@@ -96,3 +96,6 @@ curl 'https://baotinmanhhai.vn/api/graphql' \
   -H 'sec-fetch-mode: cors' \
   -H 'sec-fetch-site: same-origin' \
   -H 'user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36' -k > prices_ngoctham.json
+
+# Updated At
+jq -n --arg dt "$(date -u +%Y-%m-%dT%H:%M:%SZ)" '{updatedAt: $dt}' > info.json
