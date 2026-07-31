@@ -799,7 +799,7 @@
             }).join('');
         }
 
-        function renderPricesInto(bodyElId, prices) {
+        function renderDoji(bodyElId, prices) {
             const tbody = document.getElementById(bodyElId);
             if (!Array.isArray(prices) || prices.length === 0) {
                 tbody.innerHTML = '<tr><td colspan="6" class="no-data">Không có dữ liệu</td></tr>';
@@ -1002,9 +1002,6 @@
             if (gRes.ok) {
                 const gData = gRes.data && gRes.data.items ? gRes.data.items : gRes.data;
                 renderGoldPrice('goldpriceBody', Array.isArray(gData) ? gData : []);
-                if (gRes.data && gRes.data.ts) {
-                    try { setUpdateTime(new Date(Number(gRes.data.ts))); } catch(e){}
-                }
             } else {
                 renderErrorInto('goldpriceBody', gRes.error || 'Invalid JSON', gRes.raw, 7);
             }
@@ -1013,9 +1010,6 @@
             if (mRes.ok) {
                 const mData = mRes.data;
                 renderMihong('mihongBody', Array.isArray(mData) ? mData : (mData && mData.items ? mData.items : []));
-                if (Array.isArray(mData) && mData.length > 0 && mData[0].dateTime) {
-                    try { setUpdateTime(new Date(mData[0].dateTime)); } catch(e){}
-                }
             } else {
                 renderErrorInto('mihongBody', mRes.error || 'Invalid JSON', mRes.raw, 8);
             }
@@ -1023,8 +1017,7 @@
             // DOJI
             if (dRes.ok) {
                 const dData = dRes.data;
-                renderPricesInto('dojiBody', Array.isArray(dData) ? dData : (dData && dData.items ? dData.items : []));
-                if (Array.isArray(dData) && dData.length > 0 && dData[0].updateDate) setUpdateTime(new Date(dData[0].updateDate));
+                renderDoji('dojiBody', Array.isArray(dData) ? dData : (dData && dData.items ? dData.items : []));
             } else {
                 renderErrorInto('dojiBody', dRes.error || 'Invalid JSON', dRes.raw, 6);
             }
@@ -1052,9 +1045,6 @@
                 const nData = nRes.data;
                 const ngocThamItems = nData && Array.isArray(nData.chitiet) ? nData.chitiet : [];
                 renderNgocTham('ngocthamBody', ngocThamItems);
-                if (nData && nData.date) {
-                    try { setUpdateTime(new Date(nData.date)); } catch (e) {}
-                }
             } else {
                 renderErrorInto('ngocthamBody', nRes.error || 'Invalid JSON', nRes.raw, 7);
             }
