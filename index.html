@@ -989,13 +989,14 @@
 
         async function loadAll() {
             // Fetch all data sources in parallel
-            const [gRes, mRes, dRes, pRes, bRes, nRes] = await Promise.all([
+            const [gRes, mRes, dRes, pRes, bRes, nRes, infoRes] = await Promise.all([
                 fetchJsonSafe('prices_goldprice.json'),
                 fetchJsonSafe('prices_mihong.json'),
                 fetchJsonSafe('prices_doji.json'),
                 fetchJsonSafe('prices_phuquy.json'),
                 fetchJsonSafe('prices_baotinmanhhai.json'),
-                fetchJsonSafe('prices_ngoctham.json')
+                fetchJsonSafe('prices_ngoctham.json'),
+                fetchJsonSafe('info.json')
             ]);
 
             // GOLDPRICE
@@ -1049,7 +1050,13 @@
                 renderErrorInto('ngocthamBody', nRes.error || 'Invalid JSON', nRes.raw, 7);
             }
 
-            updateStatsCombined();
+            // Info
+            if (infoRes.ok) {
+                const infoData = infoRes.data;
+                const updatedAt = new Date(infoData.updatedAt);
+                setUpdateTime(updatedAt);
+                updateStatsCombined();
+            }
         }
 
         // Refresh data periodically
