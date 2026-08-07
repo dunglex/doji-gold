@@ -1,14 +1,14 @@
 {
-    "id": "2101",
-    "date": "2026-08-07 08:58:00",
+    "id": "2102",
+    "date": "2026-08-07 13:58:00",
     "chitiet": [
         {
             "idloaivang": [
                 "10"
             ],
             "loaivang": "Nhẫn 999.9",
-            "giaban": "13450000",
-            "giamua": "13100000",
+            "giaban": "13500000",
+            "giamua": "13150000",
             "chihiengiaban": 0,
             "chihiengiamua": 0
         },
@@ -17,8 +17,8 @@
                 "60"
             ],
             "loaivang": "Vàng Ta 999.9",
-            "giaban": "13450000",
-            "giamua": "13100000",
+            "giaban": "13500000",
+            "giamua": "13150000",
             "chihiengiaban": 0,
             "chihiengiamua": 0
         },
@@ -27,8 +27,8 @@
                 "4"
             ],
             "loaivang": "Vàng Ta 990",
-            "giaban": "13250000",
-            "giamua": "12850000",
+            "giaban": "13300000",
+            "giamua": "12900000",
             "chihiengiaban": 0,
             "chihiengiamua": 0
         },
@@ -37,8 +37,8 @@
                 "1"
             ],
             "loaivang": "Vàng 18K 750",
-            "giaban": "10032000",
-            "giamua": "9482000",
+            "giaban": "10108000",
+            "giamua": "9558000",
             "chihiengiaban": 0,
             "chihiengiamua": 0
         },
@@ -47,8 +47,8 @@
                 "46"
             ],
             "loaivang": "Vàng Trắng AU750",
-            "giaban": "10032000",
-            "giamua": "9482000",
+            "giaban": "10108000",
+            "giamua": "9558000",
             "chihiengiaban": 0,
             "chihiengiamua": 0
         },
@@ -57,8 +57,8 @@
                 "58"
             ],
             "loaivang": "Vàng Miếng SJC (Loại 10 chỉ)",
-            "giaban": "14100000",
-            "giamua": "13750000",
+            "giaban": "14200000",
+            "giamua": "13850000",
             "chihiengiaban": "0",
             "chihiengiamua": "0"
         }
